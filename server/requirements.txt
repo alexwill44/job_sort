@@ -1,0 +1,5 @@
+fastAPI
+sqlalchemy
+python-multipart
+psycopg2-binary
+asyncpg
