@@ -2,9 +2,9 @@ from sqlalchemy.sql.functions import func
 from sqlalchemy.sql.schema import Column
 from sqlalchemy.sql.sqltypes import BigInteger, DateTime, String
 
-from api.db_connection import Base
+from api.db_connection import BaseModel
 
-class Job(Base):
+class Job(BaseModel):
     """Jobs Table"""
 
     __tablename__ = "jobs"
