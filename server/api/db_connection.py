@@ -8,6 +8,12 @@ from dotenv import dotenv_values
 env = dotenv_values(".env")
 
 engine = create_engine(env.get("DB_SYNC_URL"))
-async_engine = create_async_engine(env.get("DB_URL"), echo=True,)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, class_=AsyncSession, bind=async_engine)
-BaseModel = declarative_base()
+
+async_engine = create_async_engine(env.get("DB_URL"), echo=True)
+Base = declarative_base()
+DBSession = sessionmaker(bind=async_engine, class_=AsyncSession, expire_on_commit=False)
+
+async def init_models(): 
+    async with async_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)

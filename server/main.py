@@ -23,11 +23,11 @@ async def root():
 if __name__ == "__main__":
     import uvicorn 
     from sqlalchemy.ext.asyncio import create_async_engine
-    from api.db_connection import BaseModel 
-    async def run():
+    from api.db_connection import Base 
+    async def async_conn():
         async_engine = create_async_engine(env.get("DB_URL"))
         async with async_engine.begin() as conn:
-            await conn.run_sync(BaseModel.metadata.create_all())
+            await conn.run_sync(Base.metadata.create_all())
     uvicorn.run( 
         "main:app", host="0.0.0.0.", reload=True, port=3501,
     )

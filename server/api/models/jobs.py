@@ -2,9 +2,9 @@ from sqlalchemy.sql.functions import func
 from sqlalchemy.sql.schema import Column
 from sqlalchemy.sql.sqltypes import BigInteger, DateTime, String
 
-from api.db_connection import BaseModel
+from api.db_connection import Base
 
-class Job(BaseModel):
+class Job(Base):
     """Jobs Table"""
 
     __tablename__ = "jobs"
@@ -23,5 +23,8 @@ class Job(BaseModel):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now())
 
+    __mapper_args__ = {"eager_defaults": True}
+
     def __repr__(self):
         return f"{self.company} | {self.title}"
+    
