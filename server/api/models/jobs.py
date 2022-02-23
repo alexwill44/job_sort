@@ -9,13 +9,16 @@ class Job(Base):
 
     __tablename__ = "jobs"
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True, Unique=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True, unique=True)
     date_found = Column(DateTime, index=True, nullable=False)
     company = Column(String, index=True, nullable=False)
     title = Column(String, index=True, nullable=False)
     location = Column(String, index=True, nullable=False)
     remote = Column(String, index=True, nullable=False, default="Not Indicated")
-    linke = Column(String, index=True, nullable=False)
+    link = Column(String, index=True, nullable=False)
+    source = Column(String, index=True, nullable=True)
+    submitted_by = Column(String, index=True, nullable=True)
+    notes  = Column(String, index=True, nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now())
