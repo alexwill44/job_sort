@@ -7,5 +7,5 @@ from dotenv import dotenv_values
 env = dotenv_values(".env")
 
 async_engine = create_async_engine(env.get("DB_URL"), echo=True,)
-SessionLocal = sessionmaker(async_engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=async_engine)
 Base = declarative_base()
