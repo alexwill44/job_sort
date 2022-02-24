@@ -1,15 +1,37 @@
-from typing import List
 from api.models import Job
+from distutils.log import error
 from sqlalchemy import select 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 class JobCrud:
+    
+    CACHE = {}
+    
+    @classmethod
+    async def get_by_id(
+        cls,
+        db: AsyncSession,
+        id: int
+    ) : 
+        global CACHE
+        try: 
+            async with db as session:
+                result = await session.execute(select(Job))
+                CACHE = {i.id: i.title for i in result.scalars()}
+                return CACHE[id]
+        except: 
+            print(error)
+
     @classmethod
     async def get_all_jobs(
         cls,
         db: AsyncSession,
-    ) -> List[Job]: 
-        return (
-            await db.execute(select(Job).order_by(Job.title.desc())
-            )
-        )
+    ) : 
+        global CACHE
+        try: 
+            async with db as session:
+                result = await session.execute(select(Job))
+                CACHE = {i.id: i.title for i in result.scalars()}
+                return CACHE
+        except: 
+            print(error)

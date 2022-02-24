@@ -1,3 +1,4 @@
+from datetime import datetime
 from dotenv import dotenv_values
 from fastapi import FastAPI
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -21,7 +22,7 @@ async def http_exception(_,exc):
 
 @app.get("/")
 async def root():
-    return {"message": f'{env.get("TEST")}'}
+    return { "message": f'{env.get("TEST")}'}
 
 
 if __name__ == "__main__":
