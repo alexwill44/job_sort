@@ -7,7 +7,7 @@ from api.db_connection import DBSession
 
 async def seed(db):
     print("-- Planting Data -- ")
-    for i in range(5):
+    for i in range(50000):
         #create test dummy data for job listings
         job = Job(
             date_found = date.today(),

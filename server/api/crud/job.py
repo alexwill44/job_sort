@@ -17,8 +17,8 @@ class JobCrud:
         try: 
             async with db as session:
                 result = await session.execute(select(Job))
-                CACHE = {i.id: i.title for i in result.scalars()}
-                return CACHE[id]
+                CACHE = {i.id: i.title for i in result.scalars() if i.id == id}
+                return CACHE
         except: 
             print(error)
 
