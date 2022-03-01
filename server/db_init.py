@@ -16,13 +16,15 @@ if __name__ == "__main__":
         print("-- the end in nigh --")
         for table in drop:
             print(f" say bye to: {table.name}")
-        Base.metadata.drop_all(bind=engine, tables=drop)
+        Base.metadata.drop_all(bind=
+        engine, tables=drop)
 
     print("-- Setting the Tables ; ) --")
     metadata: MetaData = Base.metadata
 
 
-    metadata.create_all(bind=engine)
+    metadata.create_all(bind=
+    engine)
     # tables are created in the order they are imported from models/__init__.py
     for table in metadata.tables:
         print(f' : | {table} ')

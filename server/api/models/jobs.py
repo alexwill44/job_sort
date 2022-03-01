@@ -1,3 +1,4 @@
+from datetime import date
 from sqlalchemy.sql.functions import func
 from sqlalchemy.sql.schema import Column
 from sqlalchemy.sql.sqltypes import BigInteger, DateTime, String
@@ -10,11 +11,11 @@ class Job(Base):
     __tablename__ = "jobs"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True, unique=True)
-    date_found = Column(DateTime, index=True, nullable=False)
+    date_found = Column(String, index=True, nullable=False)
     company = Column(String, index=True, nullable=False)
     title = Column(String, index=True, nullable=False)
     location = Column(String, index=True, nullable=False)
-    remote = Column(String, index=True, nullable=False, default="Not Indicated")
+    remote = Column(String, index=True, nullable=True, default="Not Indicated")
     link = Column(String, index=True, nullable=False)
     source = Column(String, index=True, nullable=True)
     submitted_by = Column(String, index=True, nullable=True)

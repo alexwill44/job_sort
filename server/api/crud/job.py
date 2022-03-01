@@ -1,7 +1,9 @@
+from typing import List
 from api.models import Job
 from distutils.log import error
 from sqlalchemy import select 
 from sqlalchemy.ext.asyncio import AsyncSession
+from api.schemas.jobs import JobCreate
 
 class JobCrud:
     
@@ -12,7 +14,7 @@ class JobCrud:
         cls,
         db: AsyncSession,
         id: int
-    ) : 
+    ) -> Job : 
         global CACHE
         try: 
             async with db as session:
@@ -26,7 +28,7 @@ class JobCrud:
     async def get_all_jobs(
         cls,
         db: AsyncSession,
-    ) : 
+    ) -> List[Job]: 
         global CACHE
         try: 
             async with db as session:
@@ -35,3 +37,14 @@ class JobCrud:
                 return CACHE
         except: 
             print(error)
+
+    @classmethod
+    async def add_job(
+        cls, 
+        db: AsyncSession,
+        data: JobCreate
+    ) -> Job:
+        """ create a job posting """       
+        job = Job(**dict(data))
+        db.add(job)
+        return job

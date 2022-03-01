@@ -1,0 +1,11 @@
+{
+"date_found" : "2022-02-23T21:11:33.738814+00:00",
+"company": "als.corp",
+"title":"worker person",
+"location":"place",
+"remote":"remote",
+"link":"www.site.com",
+"source":"me head",
+"submitted_by":"Alex",
+"notes":"this is not a real job"
+}

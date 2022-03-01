@@ -4,33 +4,32 @@ from typing import List
 from pydantic import BaseModel
 
 class Job(BaseModel):
-    id = int
-    date_found = datetime
-    company = str
-    title = str
-    location = str
-    remote = str
-    link = str
-    source = str
-    submitted_by = str
-    notes  = str
-    created_at = datetime
-    updated_at = datetime
+    id : int
+    date_found : str
+    company : str
+    title : str
+    location : str
+    remote : str
+    link : str
+    source : str
+    submitted_by : str
+    notes  : str
+    created_at : datetime
+    updated_at : datetime
 
     class Config:
-        orm_mode = True
+        orm_mode : True
 
 class JobCreate(BaseModel): 
-    id = int
-    date_found = datetime
-    company = str
-    title = str
-    location = str
-    remote = str
-    link = str
-    source = str
-    submitted_by = str
-    notes  = str
+    date_found : str
+    company : str
+    title : str
+    location : str
+    remote : str
+    link : str
+    source : str
+    submitted_by : str
+    notes  : str
 
 class JobResponse(BaseModel): 
     jobs: List[Job]
