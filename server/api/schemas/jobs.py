@@ -18,7 +18,7 @@ class Job(BaseModel):
     updated_at : datetime
 
     class Config:
-        orm_mode : True
+        orm_mode = True
 
 class JobCreate(BaseModel): 
     date_found : str
@@ -31,6 +31,16 @@ class JobCreate(BaseModel):
     submitted_by : str
     notes  : str
 
-class JobResponse(BaseModel): 
+class AllJobsResponse(BaseModel): 
     jobs: List[Job]
+    runtime: str
+
+class GetJobResponse(BaseModel): 
+    job: Job
+    runtime: str
+    
+    
+class CreateJobResponse(BaseModel):
+    job: Job
+    message: str
     
