@@ -33,7 +33,6 @@ async def get_job_by_id(id: int, db: AsyncSession = Depends(get_db)
 async def add_new_job(data:JobCreate, db: AsyncSession = Depends(get_db)) -> Job:
     new_job = await JobCrud.add_job(db, data)
     try:
-        await db.commit()
         return({"job":new_job,"message":"posting added to db"})
     except IntegrityError as err:
         await db.rollback()

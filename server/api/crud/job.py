@@ -47,4 +47,5 @@ class JobCrud:
         """ create a job posting """       
         job = Job(**dict(data))
         db.add(job)
+        await db.commit()
         return job
