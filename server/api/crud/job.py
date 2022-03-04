@@ -7,7 +7,7 @@ from api.schemas.jobs import JobCreate
 
 class JobCrud:
     
-    CACHE = {}
+    
     
     @classmethod
     async def get_by_id(
@@ -15,12 +15,12 @@ class JobCrud:
         db: AsyncSession,
         id: int
     ) -> Job : 
-        global CACHE
+        CACHE = {}
         try: 
             async with db as session:
                 result = await session.execute(select(Job).where(Job.id == id))
-                CACHE = {i.id: i.title for i in result.scalars()}
-                return CACHE
+                CACHE = {i.id: i for i in result.scalars()}
+                return CACHE[id]
         except: 
             print(error)
 
@@ -29,11 +29,11 @@ class JobCrud:
         cls,
         db: AsyncSession,
     ) -> List[Job]: 
-        global CACHE
+        CACHE = {}
         try: 
             async with db as session:
                 result = await session.execute(select(Job))
-                CACHE = {i.id: i.title for i in result.scalars()}
+                CACHE = {i for i in result.scalars()}
                 return CACHE
         except: 
             print(error)

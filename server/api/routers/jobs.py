@@ -19,7 +19,7 @@ async def get_jobs(db: AsyncSession = Depends(get_db)
     start = datetime.now()
     jobs = await JobCrud.get_all_jobs(db)
     finish = datetime.now()
-    return ({"jobs":list(jobs), "runtime":f"{finish - start}"})
+    return ({"jobs":jobs, "runtime":f"{finish - start}"})
    
 @router.get("/ajob", response_model=GetJobResponse)
 async def get_job_by_id(id: int, db: AsyncSession = Depends(get_db)
