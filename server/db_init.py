@@ -13,7 +13,7 @@ if __name__ == "__main__":
         drop: List[Table] = [
             Job.__table__,
         ]
-        print("-- the end in nigh --")
+        print("-- the end is nigh --")
         for table in drop:
             print(f" say bye to: {table.name}")
         Base.metadata.drop_all(bind=

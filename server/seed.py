@@ -10,14 +10,12 @@ async def seed(db):
     for i in range(5):
         #create test dummy data for job listings
         job = Job(
-            date_found = date.today(),
+            date_found = f"{date.today()}",
             company = f"{i}xyz.corp",
             title = f"{i} Software Dev",
             location = f"{i} City, CA",
             remote = "",
             link = f"www.{i}{i}{i}{i}{i}{i}.com",
-            source = f"{i} job board",
-            submitted_by = f"{i}F_name, {i}L_name",
         )    
         try:
             async with db() as session:

@@ -25,6 +25,21 @@ class JobCrud:
             print(error)
 
     @classmethod
+    async def get_by_link(
+        cls,
+        db: AsyncSession,
+        link: str
+    ) -> List[Job] : 
+        CACHE = {}
+        try: 
+            async with db as session:
+                result = await session.execute(select(Job).where(Job.link == link))
+                CACHE = {i.id: i for i in result.scalars()}
+                return CACHE
+        except: 
+            print(error)
+
+    @classmethod
     async def get_all_jobs(
         cls,
         db: AsyncSession,

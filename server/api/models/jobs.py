@@ -17,9 +17,6 @@ class Job(Base):
     location = Column(String, index=True, nullable=False)
     remote = Column(String, index=True, nullable=True, default="Not Indicated")
     link = Column(String, index=True, nullable=False)
-    source = Column(String, index=True, nullable=True)
-    submitted_by = Column(String, index=True, nullable=True)
-    notes  = Column(String, index=True, nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now())

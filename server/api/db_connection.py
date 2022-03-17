@@ -8,7 +8,9 @@ from dotenv import dotenv_values
 env = dotenv_values(".env")
 
 engine = create_engine(env.get("DB_SYNC_URL"))
-async_engine = create_async_engine(env.get("DB_URL"), echo=True)
+
+async_engine = create_async_engine(env.get("DB_URL"), echo=False)
+
 Base = declarative_base()
 DBSession = sessionmaker(async_engine, class_=AsyncSession, expire_on_commit=False)
 

@@ -11,9 +11,6 @@ class Job(BaseModel):
     location : str
     remote : str
     link : str
-    source : str
-    submitted_by : str
-    notes  : str
     created_at : datetime
     updated_at : datetime
 
@@ -27,20 +24,20 @@ class JobCreate(BaseModel):
     location : str
     remote : str
     link : str
-    source : str
-    submitted_by : str
-    notes  : str
 
-class AllJobsResponse(BaseModel): 
+class MultiJobsResponse(BaseModel): 
     jobs: List[Job]
-    runtime: str
+    message: str
 
 class GetJobResponse(BaseModel): 
     job: Job
-    runtime: str
+    message: str
     
     
 class CreateJobResponse(BaseModel):
     job: Job
+    message: str
+
+class ImportJobResponse(BaseModel):
     message: str
     
