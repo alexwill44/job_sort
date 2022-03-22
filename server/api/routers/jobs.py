@@ -66,17 +66,26 @@ async def import_jobs(
                 "remote" : row[4],
                 "link" : row[5],
             }
+
         job = await JobCrud.get_by_link(db, posting["link"]) 
-        
+        print (job)
         if job and overwrite:
-            #update posting 
-            print("updated")
+            await JobCrud.update_job(
+                job,
+                posting['date_found'],
+                posting["company"],
+                posting["title"],
+                posting["location"],
+                posting["remote"],
+                posting["link"],
+                db,
+            )    
             continue
+
         if job:
             continue
+
         else:
             await JobCrud.add_job(db, dict(posting))
 
-        
-    
     return {"message" : "ok!"}

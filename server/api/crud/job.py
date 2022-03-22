@@ -1,7 +1,7 @@
 from typing import List
 from api.models import Job
 from distutils.log import error
-from sqlalchemy import select 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.schemas.jobs import JobCreate
 
@@ -29,7 +29,7 @@ class JobCrud:
         cls,
         db: AsyncSession,
         link: str
-    ) -> List[Job] : 
+    ) -> Job: 
         CACHE = {}
         try: 
             async with db as session:
@@ -64,3 +64,46 @@ class JobCrud:
         db.add(job)
         await db.commit()
         return job
+
+    @classmethod
+    async def update_job(
+        cls, 
+        job: Job,
+        date_found: str,
+        company: str,
+        title: str,
+        location: str,
+        remote: str,
+        link: str,
+        db: AsyncSession
+    ):
+        """ update a job posting """
+
+        job.date_found = date_found
+        job.company = company
+        job.title = title
+        job.location = location
+        job.remote = remote
+        job.link = link
+        await db.commit()
+        db.refresh(job)
+        return job
+
+    
+    
+    
+    
+    @classmethod
+    async def test(
+        cls,
+        db: AsyncSession,
+        link: str
+    ) -> Job: 
+        CACHE = {}
+        try: 
+            async with db as session:
+                result = await session.execute(select(Job).filter_by(Job.link == link).first())
+                CACHE = {i.id: i for i in result.scalars()}
+                return CACHE
+        except: 
+            print(error)
