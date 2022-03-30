@@ -1,6 +1,6 @@
-from datetime import date
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.functions import func
-from sqlalchemy.sql.schema import Column
+from sqlalchemy.sql.schema import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import BigInteger, DateTime, String
 
 from api.db_connection import Base
@@ -17,6 +17,9 @@ class Job(Base):
     location = Column(String, index=True, nullable=False)
     remote = Column(String, index=True, nullable=True, default="Not Indicated")
     link = Column(String, index=True, nullable=False)
+    import_file_id = Column(BigInteger, ForeignKey("import_files.id"), primary_key=True)
+
+    import_file = relationship("ImportFile", back_populates="jobs", foreign_keys=[import_file_id])
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now())
