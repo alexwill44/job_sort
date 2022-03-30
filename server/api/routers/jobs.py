@@ -89,3 +89,8 @@ async def import_jobs(
             await JobCrud.add_job(db, dict(posting))
 
     return {"message" : "ok!"}
+
+@router.get("/search")
+async def get_jobs_search(q:str, db:AsyncSession = Depends(get_db)) -> List[Job]:
+    results = await JobCrud.search_title(q, db)
+    return results

@@ -89,21 +89,20 @@ class JobCrud:
         db.refresh(job)
         return job
 
-    
-    
-    
-    
     @classmethod
-    async def test(
-        cls,
-        db: AsyncSession,
-        link: str
-    ) -> Job: 
+    async def search_title(
+        cls, 
+        query: str,
+        db:AsyncSession
+    ):
+        """search by whole or partial title"""
         CACHE = {}
         try: 
             async with db as session:
-                result = await session.execute(select(Job).filter_by(Job.link == link).first())
-                CACHE = {i.id: i for i in result.scalars()}
+                jobs = await session.execute(select(Job).where(Job.title.contains(query)))
+                CACHE = {i.id: i for i in jobs.scalars()}
                 return CACHE
-        except: 
+        except:
             print(error)
+        
+        return 
