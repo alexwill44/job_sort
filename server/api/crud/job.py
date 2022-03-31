@@ -3,6 +3,7 @@ from api.models import Job
 from distutils.log import error
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import update as sqlalchemy_update
 from api.schemas.jobs import JobCreate
 
 class JobCrud:
@@ -33,8 +34,16 @@ class JobCrud:
         CACHE = {}
         try: 
             async with db as session:
-                result = await session.execute(select(Job).where(Job.link == link))
-                CACHE = {i.id: i for i in result.scalars()}
+                result = await session.execute(select(Job).where(Job.link == link))   
+                for i in result.scalars():
+                    CACHE[f"{i.id}"] = {
+                        "date_found": i.date_found,
+                        "title": i.title,
+                        "company": i.company,
+                        "location": i.location,
+                        "remote": i.remote,
+                        "link": i.link
+                        }
                 return CACHE
         except: 
             print(error)
@@ -73,17 +82,16 @@ class JobCrud:
         db: AsyncSession
     ):
         """ update a job posting """
-        print(data)
-        job.date_found = data.date_found
-        job.company = data.company
-        job.title = data.title
-        job.location = data.location
-        job.remote = data.remote
-        job.link = data.link
-        job.import_file_id = data.import_file_id
-        await db.commit()
-        db.refresh(job)
-        return job
+        for id in job:
+            query = (
+                sqlalchemy_update(Job)
+                .where(Job.id == int(id))
+                .values(**data)
+                .execution_options(synchronize_session="fetch")
+            )
+            await db.execute(query)
+            await db.commit()
+        return  
 
     @classmethod
     async def search_title(

@@ -16,6 +16,7 @@ async def seed(db):
             location = f"{i} City, CA",
             remote = "",
             link = f"www.{i}{i}{i}{i}{i}{i}.com",
+            import_file_id = 1,
         )    
         try:
             async with db() as session:

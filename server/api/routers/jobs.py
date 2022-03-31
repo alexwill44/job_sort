@@ -77,7 +77,7 @@ async def import_jobs(
                 "import_file_id" : import_file.id
             }
         
-        if len(posting["remote"]) > 50: continue
+        if len(posting["remote"]) > 50 or len(posting["link"]) < 10 : continue
 
         job = await JobCrud.get_by_link(db, posting["link"]) 
         if job and overwrite:
