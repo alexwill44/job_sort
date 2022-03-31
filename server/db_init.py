@@ -2,7 +2,7 @@ import sys
 from typing import List
 from sqlalchemy import MetaData
 from api.db_connection import Base, engine
-from api.models import Job
+from api.models import Job, ImportFile
 from sqlalchemy.sql.schema import Table
 
 
@@ -12,6 +12,7 @@ if __name__ == "__main__":
     if len(args) > 1 and args[1] == "drop_tables":
         drop: List[Table] = [
             Job.__table__,
+            ImportFile.__table__,
         ]
         print("-- the end is nigh --")
         for table in drop:

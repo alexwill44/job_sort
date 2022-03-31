@@ -1,3 +1,4 @@
+from urllib import response
 import aiofiles
 import csv
 
@@ -5,12 +6,13 @@ from datetime import datetime
 from distutils.log import error
 from sqlite3 import IntegrityError
 from typing import List
-from api.schemas.jobs import GetJobResponse, MultiJobsResponse, GetJobResponse, CreateJobResponse, JobCreate, ImportJobResponse
 from fastapi import APIRouter, HTTPException, status, Depends, File, UploadFile
 from api import schemas
-from api.crud import JobCrud
+from api.crud import JobCrud, ImportFileCrud
 from api.dependencies.db import get_db
 from api.models import Job
+from api.schemas.jobs import GetJobResponse, MultiJobsResponse, GetJobResponse, CreateJobResponse, JobCreate, ImportJobResponse
+from api.schemas.import_file import * 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/app", tags=["jobs"])
@@ -46,14 +48,21 @@ async def import_jobs(
     data: schemas.CSVupload = Depends(schemas.CSVupload.form_data),
     db: AsyncSession = Depends(get_db)
 ):
-    file_content= await file.read()
+    
+    file_content = await file.read()
     file_ref = f'{file.filename}_{datetime.now()}'
     async with aiofiles.open(file_ref, "wb") as upload:
         await upload.write(file_content)
+    file_size = len(open(file_ref).readlines())
     csv_reader = csv.reader(open(file_ref), delimiter="*")
     skip_header = data.skip_header
     overwrite = data.overwrite
-    if skip_header: next(csv_reader)
+
+    if skip_header: 
+        next(csv_reader)
+        file_size -= 1
+
+    import_file = await ImportFileCrud.create_import_file({"total_rows": file_size}, db)
 
     for row in csv_reader:
         if len(row) <= 0: continue
@@ -65,19 +74,16 @@ async def import_jobs(
                 "location" : row[3],
                 "remote" : row[4],
                 "link" : row[5],
+                "import_file_id" : import_file.id
             }
+        
+        if len(posting["remote"]) > 50: continue
 
         job = await JobCrud.get_by_link(db, posting["link"]) 
-        print (job)
         if job and overwrite:
             await JobCrud.update_job(
                 job,
-                posting['date_found'],
-                posting["company"],
-                posting["title"],
-                posting["location"],
-                posting["remote"],
-                posting["link"],
+                dict(posting),
                 db,
             )    
             continue
@@ -88,9 +94,22 @@ async def import_jobs(
         else:
             await JobCrud.add_job(db, dict(posting))
 
-    return {"message" : "ok!"}
+    return {"message" : f"import_file id: {import_file.id}"}
 
 @router.get("/search")
 async def get_jobs_search(q:str, db:AsyncSession = Depends(get_db)) -> List[Job]:
     results = await JobCrud.search_title(q, db)
     return results
+
+
+
+
+@router.post("/test", response_model=CreateImportFileResponse)
+async def create_import_file(data:ImportFileCreate, db: AsyncSession = Depends(get_db)) -> ImportFile:
+    import_file = await create_import_file(data, db)
+    try:
+        return {"message": "yes"}
+    except IntegrityError as err:
+        await db.rollback()
+        return {"message": f'{err}'}
+    

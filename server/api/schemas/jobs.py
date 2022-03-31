@@ -24,6 +24,7 @@ class JobCreate(BaseModel):
     location : str
     remote : str
     link : str
+    import_file_id : int
 
 class MultiJobsResponse(BaseModel): 
     jobs: List[Job]

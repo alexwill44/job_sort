@@ -69,22 +69,18 @@ class JobCrud:
     async def update_job(
         cls, 
         job: Job,
-        date_found: str,
-        company: str,
-        title: str,
-        location: str,
-        remote: str,
-        link: str,
+        data: JobCreate,
         db: AsyncSession
     ):
         """ update a job posting """
-
-        job.date_found = date_found
-        job.company = company
-        job.title = title
-        job.location = location
-        job.remote = remote
-        job.link = link
+        print(data)
+        job.date_found = data.date_found
+        job.company = data.company
+        job.title = data.title
+        job.location = data.location
+        job.remote = data.remote
+        job.link = data.link
+        job.import_file_id = data.import_file_id
         await db.commit()
         db.refresh(job)
         return job
