@@ -9,22 +9,21 @@ from api.schemas.jobs import JobCreate
 class JobCrud:
     
     
-    
     @classmethod
     async def get_by_id(
         cls,
         db: AsyncSession,
         id: int
     ) -> Job : 
-        CACHE = {}
         try: 
-            async with db as session:
-                result = await session.execute(select(Job).where(Job.id == id))
-                CACHE = {i.id: i for i in result.scalars()}
-                return CACHE[id]
+            query = select(Job).where(Job.id == id)
+            results = await db.execute(query)
+            (result,)=results.one()
+            return result
         except: 
             print(error)
-
+            return error
+        
     @classmethod
     async def get_by_link(
         cls,

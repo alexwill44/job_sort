@@ -23,7 +23,7 @@ async def get_jobs(db: AsyncSession = Depends(get_db)
     start = datetime.now()
     jobs = await JobCrud.get_all_jobs(db)
     finish = datetime.now()
-    return ({"jobs":jobs, "runtime":f"{finish - start}"})
+    return ({"jobs":jobs, "message":f"{finish - start}"})
    
 @router.get("/ajob", response_model=GetJobResponse)
 async def get_job_by_id(id: int, db: AsyncSession = Depends(get_db)
@@ -78,14 +78,12 @@ async def import_jobs(
             }
         
         if len(posting["remote"]) > 50 or len(posting["link"]) < 10 : continue
-
+                #add logic here to replace remote with a space 
+                #add validator to ensure link includes "www" 
+                
         job = await JobCrud.get_by_link(db, posting["link"]) 
         if job and overwrite:
-            await JobCrud.update_job(
-                job,
-                dict(posting),
-                db,
-            )    
+            await JobCrud.update_job(job, dict(posting), db)    
             continue
 
         if job:
@@ -101,15 +99,3 @@ async def get_jobs_search(q:str, db:AsyncSession = Depends(get_db)) -> List[Job]
     results = await JobCrud.search_title(q, db)
     return results
 
-
-
-
-@router.post("/test", response_model=CreateImportFileResponse)
-async def create_import_file(data:ImportFileCreate, db: AsyncSession = Depends(get_db)) -> ImportFile:
-    import_file = await create_import_file(data, db)
-    try:
-        return {"message": "yes"}
-    except IntegrityError as err:
-        await db.rollback()
-        return {"message": f'{err}'}
-    
